@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Application.Repositories;
 using Infrastructure.Database;
+using Infrastructure.Repositories.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -14,14 +15,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
     }
 
-    public Task<T> Add(T entity)
+    public async Task<T> Add(T entity)
     {
-        throw new NotImplementedException();
+        await _context.Set<T>().AddAsync(entity);
+        await _context.SaveChangesAsync();
+        return entity;
     }
 
-    public Task<bool> Delete(Guid id)
+    public async Task<bool> Delete(Guid id)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Set<T>().FindAsync(id);
+        if (entity is null) return false;
+
+        _context.Set<T>().Remove(entity);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<T?> Get(Expression<Func<T, bool>> pred)
@@ -29,18 +37,23 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _context.Set<T>().FirstOrDefaultAsync(pred);
     }
 
-    public Task<IEnumerable<T>> GetAll()
+    public async Task<IEnumerable<T>> GetAll()
     {
-        throw new NotImplementedException();
+        return await _context.Set<T>().ToListAsync();
     }
 
-    public Task<T?> GetById(Guid id)
+    public async Task<T?> GetById(Guid id)
     {
-        throw new NotImplementedException();
+        return await _context.Set<T>().FindAsync(id);
     }
 
-    public Task<T> Update(T entity)
+    public async Task<T> Update(T entity, Guid id)
     {
-        throw new NotImplementedException();
+        var dbEntity = await _context.Set<T>().FindAsync(id)
+            ?? throw new EntityNotFoundException();
+
+        _context.Entry(dbEntity).CurrentValues.SetValues(entity);
+        await _context.SaveChangesAsync();
+        return entity;
     }
 }

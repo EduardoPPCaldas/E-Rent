@@ -8,6 +8,6 @@ public interface IGenericRepository<T>
     Task<T?> GetById(Guid id);
     Task<T?> Get(Expression<Func<T, bool>> pred);
     Task<T> Add(T entity);
-    Task<T> Update(T entity);
+    Task<T> Update(T entity, Guid id);
     Task<bool> Delete(Guid id);
 }
