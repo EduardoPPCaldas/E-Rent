@@ -15,7 +15,7 @@ Application design to rent sports courts in a more easy and manageble way
 
 ## Requirement
 
-* .NET Core 6, C# 10
+* .NET Core 7, C# 11
 
 ## Install
 
