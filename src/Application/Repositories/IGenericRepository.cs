@@ -4,10 +4,10 @@ namespace Application.Repositories;
 
 public interface IGenericRepository<T>
 {
-    Task<IEnumerable<T>> GetAll();
-    Task<T?> GetById(Guid id);
-    Task<T?> Get(Expression<Func<T, bool>> pred);
-    Task<T> Add(T entity);
-    Task<T> Update(T entity, Guid id);
-    Task<bool> Delete(Guid id);
+    Task<IEnumerable<T>> GetAll(CancellationToken cancellationToken);
+    Task<T?> GetById(Guid id, CancellationToken cancellationToken);
+    Task<T?> Get(Expression<Func<T, bool>> pred, CancellationToken cancellationToken);
+    Task<T> Add(T entity, CancellationToken cancellationToken);
+    Task<T> Update(T entity, Guid id, CancellationToken cancellationToken);
+    Task<bool> Delete(Guid id, CancellationToken cancellationToken);
 }
