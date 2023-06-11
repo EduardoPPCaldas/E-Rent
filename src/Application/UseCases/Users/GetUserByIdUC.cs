@@ -1,4 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
 using Application.DTOs.Users;
 using Application.Repositories;
 using Application.Shared;
@@ -21,10 +20,9 @@ public class GetUserByIdUC : IGetUserByIdUC
     public async Task<Result<GetUserDTO>> Execute(Guid id, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetById(id, cancellationToken);
+
         if (user is null)
-        {
-            return new Result<GetUserDTO>(new UserNotFoundException($"User with id {id} not found"));
-        }
+            return new Result<GetUserDTO>(new UserNotFoundException($"Could not found any user with this id: {id}"));
 
         return new Result<GetUserDTO>(new GetUserDTO
         {
