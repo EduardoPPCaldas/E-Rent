@@ -1,4 +1,5 @@
 using Api.Endpoints;
+using Api.Endpoints.Users;
 
 namespace Api.Extensions;
 
@@ -6,13 +7,7 @@ public static class RegisterEndpointGroupsExtension
 {
     public static WebApplication RegisterEndpointGroups(this WebApplication app)
     {
-        var endpointGroups = typeof(Program).Assembly
-            .GetTypes()
-            .Where(t => t.IsAssignableTo(typeof(IEndpointGroup)) && !t.IsAbstract && !t.IsInterface)
-            .Select(Activator.CreateInstance)
-            .Cast<IEndpointGroup>();
-
-        foreach(var endpointGroup in endpointGroups)
+        foreach(var endpointGroup in app.Services.GetServices<IEndpointGroup>())
         {
             if (endpointGroup is null) throw new InvalidProgramException("Endpoint not found");
 
@@ -20,5 +15,12 @@ public static class RegisterEndpointGroupsExtension
         }
 
         return app;
+    }
+
+    public static IServiceCollection RegisterEndpointsServices(this IServiceCollection services)
+    {
+        services.AddTransient<IEndpointGroup, UserEndpoints>();
+
+        return services;
     }
 }

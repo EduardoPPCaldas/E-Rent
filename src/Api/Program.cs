@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.InjectInfrastructureServices(builder.Configuration);
 builder.Services.InjectApplicationServices();
+builder.Services.RegisterEndpointsServices();
 
 var app = builder.Build();
 

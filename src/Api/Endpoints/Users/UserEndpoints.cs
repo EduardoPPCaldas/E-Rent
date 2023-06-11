@@ -10,12 +10,14 @@ public class UserEndpoints : IEndpointGroup
     {
         var userEndpointGroup = app.MapGroup("/user");
 
-        userEndpointGroup.MapGet("{id}", async (IGetUserByIdUC getUserByIdUC, Guid id, CancellationToken cancellationToken) =>
-        {
-            var result = await getUserByIdUC.Execute(id, cancellationToken);
-            return result.Match(
-                succ => Results.Ok(succ),
-                fail => Results.NotFound(fail.Message));
-        });
+        userEndpointGroup.MapGet("{id}", Get);
+    }
+
+    private async Task<IResult> Get(IGetUserByIdUC getUserByIdUC, Guid id, CancellationToken cancellationToken)
+    {
+        var result = await getUserByIdUC.Execute(id, cancellationToken);
+        return result.Match(
+            succ => Results.Ok(succ),
+            fail => Results.NotFound(fail.Message));
     }
 }
