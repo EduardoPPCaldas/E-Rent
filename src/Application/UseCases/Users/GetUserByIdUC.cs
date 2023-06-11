@@ -1,5 +1,5 @@
-using Application.DTOs.Users;
 using Application.Repositories;
+using Application.Responses.Users;
 using Application.Shared;
 using Application.UseCases.Users.Exceptions;
 using Domain.Users;
@@ -17,14 +17,14 @@ public class GetUserByIdUC : IGetUserByIdUC
         _userRepository = userRepository;
     }
 
-    public async Task<Result<GetUserDTO>> Execute(Guid id, CancellationToken cancellationToken)
+    public async Task<Result<GetUserResponse>> Execute(Guid id, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetById(id, cancellationToken);
 
         if (user is null)
-            return new Result<GetUserDTO>(new UserNotFoundException($"Could not found any user with this id: {id}"));
+            return new Result<GetUserResponse>(new UserNotFoundException($"Could not found any user with this id: {id}"));
 
-        return new Result<GetUserDTO>(new GetUserDTO
+        return new Result<GetUserResponse>(new GetUserResponse
         {
             Email = user.Email,
             Name = user.Name,

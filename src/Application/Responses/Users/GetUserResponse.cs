@@ -1,6 +1,6 @@
-namespace Application.DTOs.Users;
+namespace Application.Responses.Users;
 
-public class GetUserDTO
+public class GetUserResponse
 {
     public Guid Id { get; set; }
     public required string Name { get; set; }

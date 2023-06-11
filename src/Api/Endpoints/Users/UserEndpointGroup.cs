@@ -1,16 +1,16 @@
-using System.Reflection.Metadata.Ecma335;
+using Application.Requests.Users;
 using Application.UseCases.Users;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Endpoints.Users;
 
-public class UserEndpoints : IEndpointGroup
+public class UserEndpointGroup : IEndpointGroup
 {
     public void Register(WebApplication app)
     {
         var userEndpointGroup = app.MapGroup("/user");
 
         userEndpointGroup.MapGet("{id}", Get);
+        userEndpointGroup.MapPost("", Post);
     }
 
     private async Task<IResult> Get(IGetUserByIdUC getUserByIdUC, Guid id, CancellationToken cancellationToken)
@@ -19,5 +19,14 @@ public class UserEndpoints : IEndpointGroup
         return result.Match(
             succ => Results.Ok(succ),
             fail => Results.NotFound(fail.Message));
+    }
+
+    private async Task<IResult> Post(ICreateUserUC createUserUC, CreateUserRequest request, CancellationToken cancellationToken)
+    {
+        var result = await createUserUC.Execute(request, cancellationToken);
+        return result.Match(
+            succ => Results.Created($"user/{succ.Id}",succ),
+            fail => Results.BadRequest(fail.Message)
+        );
     }
 }

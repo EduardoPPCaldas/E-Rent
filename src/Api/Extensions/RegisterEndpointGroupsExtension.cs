@@ -19,7 +19,7 @@ public static class RegisterEndpointGroupsExtension
 
     public static IServiceCollection RegisterEndpointsServices(this IServiceCollection services)
     {
-        services.AddTransient<IEndpointGroup, UserEndpoints>();
+        services.AddTransient<IEndpointGroup, UserEndpointGroup>();
 
         return services;
     }

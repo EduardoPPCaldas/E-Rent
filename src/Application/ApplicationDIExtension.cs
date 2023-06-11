@@ -9,7 +9,8 @@ public static class ApplicationServicesInjectionExtension
     {
         // Users
         services
-            .AddScoped<IGetUserByIdUC, GetUserByIdUC>();
+            .AddScoped<IGetUserByIdUC, GetUserByIdUC>()
+            .AddScoped<ICreateUserUC, CreateUserUC>();
 
         return services;
     }
