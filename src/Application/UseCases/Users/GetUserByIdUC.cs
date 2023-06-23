@@ -1,4 +1,6 @@
+using System.Net;
 using Application.Repositories;
+using Application.Responses;
 using Application.Responses.Users;
 using Application.Shared;
 using Application.UseCases.Users.Exceptions;
@@ -19,10 +21,11 @@ public class GetUserByIdUC : IGetUserByIdUC
 
     public async Task<Result<GetUserResponse>> Execute(Guid id, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetById(id, cancellationToken);
-
-        if (user is null)
-            return new Result<GetUserResponse>(new UserNotFoundException($"Could not found any user with this id: {id}"));
+        var user = await _userRepository.GetById(id, cancellationToken) ?? throw new ErrorResponseException
+            {
+                Error = $"Could not find any user with this id: {id}",
+                HttpStatusCode = HttpStatusCode.NotFound
+            };
 
         return new Result<GetUserResponse>(new GetUserResponse
         {

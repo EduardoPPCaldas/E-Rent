@@ -1,32 +1,37 @@
 using Application.Requests.Users;
 using Application.UseCases.Users;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Endpoints.Users;
 
 public class UserEndpointGroup : IEndpointGroup
 {
-    public void Register(WebApplication app)
+    public void Register(IEndpointRouteBuilder app)
     {
         var userEndpointGroup = app.MapGroup("/user");
 
         userEndpointGroup.MapGet("{id}", Get);
         userEndpointGroup.MapPost("", Post);
+        userEndpointGroup.MapDelete("{id:Guid}", Delete);
     }
 
     private async Task<IResult> Get(IGetUserByIdUC getUserByIdUC, Guid id, CancellationToken cancellationToken)
     {
-        var result = await getUserByIdUC.Execute(id, cancellationToken);
-        return result.Match(
-            succ => Results.Ok(succ),
-            fail => Results.NotFound(fail.Message));
+        return Results.Ok(await getUserByIdUC.Execute(id, cancellationToken));
     }
 
     private async Task<IResult> Post(ICreateUserUC createUserUC, CreateUserRequest request, CancellationToken cancellationToken)
     {
-        var result = await createUserUC.Execute(request, cancellationToken);
-        return result.Match(
-            succ => Results.Created($"user/{succ.Id}",succ),
-            fail => Results.BadRequest(fail.Message)
-        );
+        var user = await createUserUC.Execute(request, cancellationToken);
+        return Results.Created($"/users/{user.Id}", user);
+    }
+
+    private async Task<IResult> Delete(
+        [FromServices] IDeleteUserUC deleteUserUC,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        await deleteUserUC.Execute(id, cancellationToken);
+        return Results.NoContent();
     }
 }

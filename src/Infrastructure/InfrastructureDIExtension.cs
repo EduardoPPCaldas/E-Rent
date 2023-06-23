@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Application.Repositories;
+﻿using Application.Repositories;
 using Infrastructure.Database;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;

@@ -1,4 +1,5 @@
 using Api.Extensions;
+using Api.Middlewares;
 using Application;
 using Infrastructure;
 
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.InjectInfrastructureServices(builder.Configuration);
 builder.Services.InjectApplicationServices();
+builder.Services.RegisterMiddlewares();
 builder.Services.RegisterEndpointsServices();
 
 var app = builder.Build();
@@ -26,6 +28,8 @@ if (!app.Environment.IsProduction())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.RegisterEndpointGroups();
 
