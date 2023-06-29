@@ -13,6 +13,7 @@ public class UserEndpointGroup : IEndpointGroup
         userEndpointGroup.MapGet("{id}", Get);
         userEndpointGroup.MapPost("", Post);
         userEndpointGroup.MapDelete("{id:Guid}", Delete);
+        userEndpointGroup.MapPost("{id:Guid}", Update);
     }
 
     private async Task<IResult> Get(IGetUserByIdUC getUserByIdUC, Guid id, CancellationToken cancellationToken)
@@ -33,5 +34,15 @@ public class UserEndpointGroup : IEndpointGroup
     {
         await deleteUserUC.Execute(id, cancellationToken);
         return Results.NoContent();
+    }
+
+    private async Task<IResult> Update(
+        [FromServices] IUpdateUserUC updateUserUC,
+        [FromRoute] Guid id,
+        [FromBody] UpdateUserRequest request,
+        CancellationToken cancellationToken)
+    {
+        var user = await updateUserUC.Execute(id, request, cancellationToken);
+        return Results.Ok(user);
     }
 }

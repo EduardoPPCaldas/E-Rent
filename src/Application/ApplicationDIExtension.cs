@@ -11,7 +11,8 @@ public static class ApplicationServicesInjectionExtension
         services
             .AddScoped<IGetUserByIdUC, GetUserByIdUC>()
             .AddScoped<ICreateUserUC, CreateUserUC>()
-            .AddScoped<IDeleteUserUC, DeleteUserUC>();
+            .AddScoped<IDeleteUserUC, DeleteUserUC>()
+            .AddScoped<IUpdateUserUC, UpdateUserUC>();
 
         return services;
     }

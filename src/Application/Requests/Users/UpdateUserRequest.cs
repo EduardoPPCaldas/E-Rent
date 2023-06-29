@@ -1,7 +1,3 @@
-
 namespace Application.Requests.Users;
 
-public record UpdateUserRequest(
-    string Name,
-    string Email
-    );
+public record UpdateUserRequest(string Email);
